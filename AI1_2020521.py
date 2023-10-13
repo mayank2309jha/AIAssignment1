@@ -35,185 +35,224 @@ def get_sentiment(text):
 
 def filter_recommendations():
         global filtered_data
-        print("-----1 => FILTER BY REGION")
-        print("-----2 => FILTER BY WEATHER")
-        print("-----3 => FILTER BY RATING")
-        print("-----4 => FILTER BY FEEDBACKS")
-        print("-----5 => FILTER BY ACTIVITIES")
-        print("-----6 => FILTER BY CONNECTIVITY")
-        print("-----7 => SORT BASED ON INCREASING RATING.")
-        print("-----8 => SORT BASED ON DECREASING RATING.")
-        user_input = input("TRAVELLER => ")
-        if(user_input == "1"):
-            unique_items = set()
-            for item in filtered_data:
-               unique_items.add(item[1])
-            print("AITRAVEL => Okay then. Here is a list of regions. Enter the full name as shown.")
-            for item in unique_items:
-                print(item)
-            user_input = input("TRAVELLER => ")
-            print("AITRAVEL => Before filtering we had "+str(len(filtered_data))+" locations.")
-            filtered_data = [item for item in filtered_data if item[1] == user_input]
-            print("AITRAVEL => Now we have "+str(len(filtered_data))+" locations.")
-            if len(filtered_data) == 0:
-                print("We have nothing to show.")
-            else:
-                print("AITRAVEL => Here, let me show you some of them")
-                for item in filtered_data[:5] if len(filtered_data) >= 5 else filtered_data:
-                    spot = Location(item)
-                    print(spot)
-        elif(user_input == "2"):
-            print("AITRAVEL => Give me the weather experience you want.")
-            print("AITRAVEL => Mild / Extreme {Pick one}")
-            me = input("TRAVELLER => ")
-            print("AITRAVEL => Summer / Winter {Pick one}")
-            sw = input("TRAVELLER => ")
-            print("AITRAVEL => Cloudy / Not Cloudy {Pick one}")
-            cn = input("TRAVELLER => ")
-            print("AITRAVEL => Rain / No Rain {Pick one}")
-            rn = input("TRAVELLER => ")
-            weather = me + ", " + sw + ", " + cn + ", " + rn
-            print("AITRAVEL => Before filtering we had "+str(len(filtered_data))+" locations.")
-            filtered_data = [item for item in filtered_data if item[2] == weather]
-            print("AITRAVEL => Now we have "+str(len(filtered_data))+" locations.")
-            if len(filtered_data) == 0:
-                print("We have nothing to show.")
-            else:
-                print("AITRAVEL => Here, let me show you some of them")
-                for item in filtered_data[:5] if len(filtered_data) >= 5 else filtered_data:
-                    spot = Location(item)
-                    print(spot)
-        elif(user_input == "3"):
-            print("AITRAVEL => What is the minimum rating you want?")
-            user_input = input("TRAVELLER => ")
-            print("AITRAVEL => Before filtering we had "+str(len(filtered_data))+" locations.")
-            filtered_data = [row for row in filtered_data if int(user_input) < row[3]]
-            print("AITRAVEL => Now we have "+str(len(filtered_data))+" locations.")
-        elif(user_input == "4"):
-            # we will just perform a simple sentiment analysis on the column Feedback of the data.
-            # Apply sentiment analysis function to the "Feedback" column in the array
-            sentiments = np.array([get_sentiment(row[5]) for row in filtered_data])
-            # Add the sentiment scores as a new column in the array
-            arr_with_sentiments = np.column_stack((filtered_data, sentiments))
-            # Sort the array based on the sentiment scores (positive to negative)
-            sorted_arr = arr_with_sentiments[arr_with_sentiments[:, -1].argsort()[::-1]]
-            for i in range(0,5):
-                item = sorted_arr[i]
-                print(Location(item))
-            filtered_data = sorted_arr
-        elif(user_input == "5"):
-            doneChoosingActivities = False
-            while doneChoosingActivities == False:
-                print("AITRAVEL => What kind of activities? Select one.")
-                print("----- 1 => ADVENTURE")
-                print("----- 2 => RELAXATION")
-                print("----- 3 => CULTURE")
-                print("----- 4 => I HAVE SOMETHING SPECIFIC IN MIND")
-                print("----- 5 => EXIT")
-                user_input = input("TRAVELLER => ")
-                adventure = ["Hiking","Adventure sports (e.g., zip-lining, paragliding)","Hot air balloon rides","Water sports (e.g., snorkeling, kayaking)"]
-                relaxation = ["Sightseeing", "Photography","Shopping", "Dining at local restaurants","Relaxing at beaches","Taking guided tours","Cruises or boat tours","Exploring local markets", "Visiting amusement parks","Wine or food tasting", "Taking scenic drives", "Relaxing in spas or wellness retreats","Cycling", "Attend workshops or classes","Camping", "Joining city walks or food tours","Taking cooking classes", "Golfing", "Engaging in community service or volunteer activities"]
-                culture = ["Visiting museums", "Attending cultural performances","Exploring historical sites","Wildlife watching", "Participating in local festivals","Visiting religious or spiritual sites","Learning about local history"]
-                if(user_input == "1"):
-                    print("AITRAVEL => Great choice. You can choose one of the following activities:-")
-                    for item in adventure:
-                        print(item)
-                    user_input = input("TRAVELLER => ")
-                    filtered_data = [row for row in filtered_data if user_input in row[6] ]
-                    if len(filtered_data) == 0:
-                        print("AITRAVEL => There is a problem. Try again.")
-                    else:
-                        print("I have made some changes to the recommendations.")
-                        print("AITRAVEL => Now we have "+str(len(filtered_data))+" locations.")
-                        for item in filtered_data[:5] if len(filtered_data) >= 5 else filtered_data:
-                            print(Location(item))
-                elif(user_input == "2"):
-                    print("AITRAVEL => Great choice. You can choose one of the following activities:-")
-                    for item in relaxation:
-                        print(item)
-                    user_input = input("TRAVELLER => ")
-                    filtered_data = [row for row in filtered_data if user_input in row[6] ]
-                    if len(filtered_data) == 0:
-                        print("AITRAVEL => There is a problem. Try again.")
-                    else:
-                        print("I have made some changes to the recommendations.")
-                        print("AITRAVEL => Now we have "+str(len(filtered_data))+" locations.")
-                        for item in filtered_data[:5] if len(filtered_data) >= 5 else filtered_data:
-                            print(Location(item))
-                elif(user_input == "3"):
-                    print("AITRAVEL => Great choice. You can choose one of the following activities:-")
-                    for item in culture:
-                        print(item)
-                    user_input = input("TRAVELLER => ")
-                    filtered_data = [row for row in filtered_data if user_input in row[6] ]
-                    if len(filtered_data) == 0:
-                        print("AITRAVEL => There is a problem. Try again.")
-                    else:
-                        print("I have made some changes to the recommendations.")
-                        print("AITRAVEL => Now we have "+str(len(filtered_data))+" locations.")
-                        for item in filtered_data[:5] if len(filtered_data) >= 5 else filtered_data:
-                            print(Location(item))
-                elif(user_input == "4"):
-                    print("AITRAVEL => What activity do you want to do?")
-                    user_input = input("TRAVELLER => ")
-                    present = False
-                    for item in adventure + relaxation + culture:
-                        if item == user_input:
-                            print("AITRAVEL => Okay, let me check.")
-                            present = True
-                    if present:
-                        filtered_data = [row for row in filtered_data if user_input in row[6]]
-                        print("Now we have "+str(len(filtered_data))+" locations. Let me show you some of them.")
-                        for item in filtered_data[:5] if len(filtered_data) >= 5 else filtered_data:
-                            print(Location(item))
-                    else:
-                        print("AITRAVEL => I do not think we have this activity.")
-
-                elif(user_input == "5"):
-                    print("AITRAVEL => Okay, Glad I could be of help.")
-                    doneChoosingActivities = True
-        elif(user_input == "6"):
-            print("AITRAVEL => Okay, first answer me this.")
-            print("-----1 => Spots with best connectivity first.")
-            print("-----2 => Sports with worst connectivity first.")
+        filtering = True
+        while filtering:
+            print("----------------------------------------  AITRAVEL => Time to make a choice.----------------------------------------  ")
+            print("-----1 => FILTER BY REGION")
+            print("-----2 => FILTER BY WEATHER")
+            print("-----3 => FILTER BY RATING")
+            print("-----4 => FILTER BY FEEDBACKS")
+            print("-----5 => FILTER BY ACTIVITIES")
+            print("-----6 => FILTER BY CONNECTIVITY")
+            print("-----7 => HIGHEST RATING FIRST")
+            print("-----8 => LOWEST RATING FIRST")
+            print("-----9 => SHOW NAMES OF FILTERED LOCATIONS")
+            print("-----10 => SHOW DESCRIPTION OF SOME FILTERED LOCATIONS")
+            print("-----11 => EXIT")
             user_input = input("TRAVELLER => ")
             if(user_input == "1"):
-                # we will just perform a simple sentiment analysis on the column Connectivity of the data.
-                # Apply sentiment analysis function to the "Connectivity" column in the array
-                sentiments = np.array([get_sentiment(row[4]) for row in filtered_data])
-                # Add the sentiment scores as a new column in the array
-                arr_with_sentiments = np.column_stack((filtered_data, sentiments))
-                # Sort the array based on the sentiment scores (positive to negative)
-                sorted_arr = arr_with_sentiments[arr_with_sentiments[:, -1].argsort()][::-1]
-                for i in range(min(5, len(sorted_arr))):
-                    item = sorted_arr[i]
-                    print(Location(item))
+                unique_items = set()
+                for item in filtered_data:
+                    unique_items.add(item[1])
+                print("AITRAVEL => Okay then. Here is a list of regions. Enter the full name as shown.")
+                for item in unique_items:
+                    print(item)
+                user_input = input("TRAVELLER => ")
+                print("AITRAVEL => Before filtering we had "+str(len(filtered_data))+" locations.")
+                filtered_data = [item for item in filtered_data if item[1] == user_input]
+                print("AITRAVEL => Now we have "+str(len(filtered_data))+" locations.")
             elif(user_input == "2"):
-                # we will just perform a simple sentiment analysis on the column Connectivity of the data.
-                # Apply sentiment analysis function to the "Connectivity" column in the array
-                sentiments = np.array([get_sentiment(row[4]) for row in filtered_data])
+                print("AITRAVEL => Give me the weather experience you want.")
+                print("AITRAVEL => Mild / Extreme {Pick one}")
+                me = input("TRAVELLER => ")
+                print("AITRAVEL => Summer / Winter {Pick one}")
+                sw = input("TRAVELLER => ")
+                print("AITRAVEL => Cloudy / Not Cloudy {Pick one}")
+                cn = input("TRAVELLER => ")
+                print("AITRAVEL => Rain / No Rain {Pick one}")
+                rn = input("TRAVELLER => ")
+                weather = me + ", " + sw + ", " + cn + ", " + rn
+                print("AITRAVEL => Before filtering we had "+str(len(filtered_data))+" locations.")
+                filtered_data = [item for item in filtered_data if item[2] == weather]
+                print("AITRAVEL => Now we have "+str(len(filtered_data))+" locations.")
+            elif(user_input == "3"):
+                print("AITRAVEL => What is the minimum rating you want?")
+                user_input = input("TRAVELLER => ")
+                print("AITRAVEL => Before filtering we had "+str(len(filtered_data))+" locations.")
+                filtered_data = [row for row in filtered_data if int(user_input) < row[3]]
+                print("AITRAVEL => Now we have "+str(len(filtered_data))+" locations.")
+            elif(user_input == "4"):
+                # we will just perform a simple sentiment analysis on the column Feedback of the data.
+                # Apply sentiment analysis function to the "Feedback" column in the array
+                sentiments = np.array([get_sentiment(row[5]) for row in filtered_data])
                 # Add the sentiment scores as a new column in the array
                 arr_with_sentiments = np.column_stack((filtered_data, sentiments))
                 # Sort the array based on the sentiment scores (positive to negative)
-                sorted_arr = arr_with_sentiments[arr_with_sentiments[:, -1].argsort()]
-                for i in range(min(5, len(sorted_arr))):
+                sorted_arr = arr_with_sentiments[arr_with_sentiments[:, -1].argsort()[::-1]]
+                for i in min(range(0,5),len(sorted_arr)):
                     item = sorted_arr[i]
                     print(Location(item))
+            elif(user_input == "5"):
+                doneChoosingActivities = False
+                while doneChoosingActivities == False:
+                    print("AITRAVEL => What kind of activities? Select one.")
+                    print("----- 1 => ADVENTURE")
+                    print("----- 2 => RELAXATION")
+                    print("----- 3 => CULTURE")
+                    print("----- 4 => I HAVE SOMETHING SPECIFIC IN MIND")
+                    print("----- 5 => EXIT")
+                    user_input = input("TRAVELLER => ")
+                    adventure = ["Hiking","Adventure sports (e.g., zip-lining, paragliding)","Hot air balloon rides","Water sports (e.g., snorkeling, kayaking)"]
+                    relaxation = ["Sightseeing", "Photography","Shopping", "Dining at local restaurants","Relaxing at beaches","Taking guided tours","Cruises or boat tours","Exploring local markets", "Visiting amusement parks","Wine or food tasting", "Taking scenic drives", "Relaxing in spas or wellness retreats","Cycling", "Attend workshops or classes","Camping", "Joining city walks or food tours","Taking cooking classes", "Golfing", "Engaging in community service or volunteer activities"]
+                    culture = ["Visiting museums", "Attending cultural performances","Exploring historical sites","Wildlife watching", "Participating in local festivals","Visiting religious or spiritual sites","Learning about local history"]
+                    if(user_input == "1"):
+                        print("AITRAVEL => Great choice. You can choose one of the following activities:-")
+                        for item in adventure:
+                            print(item)
+                        user_input = input("TRAVELLER => ")
+                        filtered_data = [row for row in filtered_data if user_input in row[6] ]
+                        if len(filtered_data) == 0:
+                            print("AITRAVEL => There is a problem. Try again.")
+                        else:
+                            print("I have made some changes to the recommendations.")
+                            print("AITRAVEL => Now we have "+str(len(filtered_data))+" locations.")
+                            for item in filtered_data[:5] if len(filtered_data) >= 5 else filtered_data:
+                                print(Location(item))
+                    elif(user_input == "2"):
+                        print("AITRAVEL => Great choice. You can choose one of the following activities:-")
+                        for item in relaxation:
+                            print(item)
+                        user_input = input("TRAVELLER => ")
+                        filtered_data = [row for row in filtered_data if user_input in row[6] ]
+                        if len(filtered_data) == 0:
+                            print("AITRAVEL => There is a problem. Try again.")
+                        else:
+                            print("I have made some changes to the recommendations.")
+                            print("AITRAVEL => Now we have "+str(len(filtered_data))+" locations.")
+                            for item in filtered_data[:5] if len(filtered_data) >= 5 else filtered_data:
+                                print(Location(item))
+                    elif(user_input == "3"):
+                        print("AITRAVEL => Great choice. You can choose one of the following activities:-")
+                        for item in culture:
+                            print(item)
+                        user_input = input("TRAVELLER => ")
+                        filtered_data = [row for row in filtered_data if user_input in row[6] ]
+                        if len(filtered_data) == 0:
+                            print("AITRAVEL => There is a problem. Try again.")
+                        else:
+                            print("I have made some changes to the recommendations.")
+                            print("AITRAVEL => Now we have "+str(len(filtered_data))+" locations.")
+                            for item in filtered_data[:5] if len(filtered_data) >= 5 else filtered_data:
+                                print(Location(item))
+                    elif(user_input == "4"):
+                        print("AITRAVEL => What activity do you want to do?")
+                        user_input = input("TRAVELLER => ")
+                        present = False
+                        for item in adventure + relaxation + culture:
+                            if item == user_input:
+                                print("AITRAVEL => Okay, let me check.")
+                                present = True
+                        if present:
+                            filtered_data = [row for row in filtered_data if user_input in row[6]]
+                            print("Now we have "+str(len(filtered_data))+" locations. Let me show you some of them.")
+                            for item in filtered_data[:5] if len(filtered_data) >= 5 else filtered_data:
+                                print(Location(item))
+                        else:
+                            print("AITRAVEL => I do not think we have this activity.")
+
+                    elif(user_input == "5"):
+                        print("AITRAVEL => Okay, Glad I could be of help.")
+                        doneChoosingActivities = True
+            elif(user_input == "6"):
+                print("AITRAVEL => Okay, first answer me this.")
+                print("-----1 => Spots with best connectivity first.")
+                print("-----2 => Sports with worst connectivity first.")
+                user_input = input("TRAVELLER => ")
+                if(user_input == "1"):
+                    # we will just perform a simple sentiment analysis on the column Connectivity of the data.
+                    # Apply sentiment analysis function to the "Connectivity" column in the array
+                    sentiments = np.array([get_sentiment(row[4]) for row in filtered_data])
+                    # Add the sentiment scores as a new column in the array
+                    arr_with_sentiments = np.column_stack((filtered_data, sentiments))
+                    # Sort the array based on the sentiment scores (positive to negative)
+                    sorted_arr = arr_with_sentiments[arr_with_sentiments[:, -1].argsort()][::-1]
+                    for i in range(min(5, len(sorted_arr))):
+                        item = sorted_arr[i]
+                        print(Location(item))
+                elif(user_input == "2"):
+                    # we will just perform a simple sentiment analysis on the column Connectivity of the data.
+                    # Apply sentiment analysis function to the "Connectivity" column in the array
+                    sentiments = np.array([get_sentiment(row[4]) for row in filtered_data])
+                    # Add the sentiment scores as a new column in the array
+                    arr_with_sentiments = np.column_stack((filtered_data, sentiments))
+                    # Sort the array based on the sentiment scores (positive to negative)
+                    sorted_arr = arr_with_sentiments[arr_with_sentiments[:, -1].argsort()]
+                    for i in range(min(5, len(sorted_arr))):
+                        item = sorted_arr[i]
+                        print(Location(item))
+                else:
+                    return
+            elif(user_input == "7"):
+                filtered_data = sorted(filtered_data, key=lambda row: row[3], reverse=True)
+                print("AITRAVEL => Great, I have sorted the data for you")
+                for item in filtered_data[:5] if len(filtered_data) >= 5 else filtered_data:
+                    print(Location(item))
+            elif(user_input == "8"):
+                filtered_data = sorted(filtered_data, key=lambda row: row[3])
+                print("AITRAVEL => Great, I have sorted the data for you")
+                for item in filtered_data[:5] if len(filtered_data) >= 5 else filtered_data:
+                    print(Location(item))
+            elif(user_input == "9"):
+                print("AITRAVEL => Here, are the names of some filtered locations.")
+                limit = min(20, len(filtered_data))
+                random_numbers = random.sample(range(len(filtered_data)), limit)
+                for i in random_numbers:
+                    print(filtered_data[i][0])
+            elif(user_input == "10"):
+                print("AITRAVEL => Okay, let me show you some places in detail")
+                limit = min(5, len(filtered_data))
+                random_numbers = random.sample(range(len(filtered_data)), limit)
+                for i in random_numbers:
+                    print(Location(filtered_data[i]))
+            elif(user_input == "11"):
+                print("AITRAVEL => Okay, let me compose my final recommendation.")
+                if len(filtered_data) == 0:
+                    print("AITRAVEL => Sorry, I have no recommendations for you as no location matches your preference.")
+                    return
+                print("AITRAVEL => I have "+str(len(filtered_data))+" recommendations for you.")
+                print("AITRAVEL => Let me summarise...")
+
+                print("AITRAVEL = > If Feedbacks are more important to you. Then I will give you the location with the best feedbacks.")
+                sentiments = np.array([get_sentiment(row[5]) for row in filtered_data])
+                arr_with_sentiments = np.column_stack((filtered_data, sentiments))
+                sorted_arr = arr_with_sentiments[arr_with_sentiments[:, -1].argsort()[::-1]]
+                limit = min(1,len(sorted_arr))
+                for i in range(0,limit):
+                    item = sorted_arr[i]
+                    print(Location(item))
+
+                print("AITRAVEL = > If Connectivity is more important to you. Then I will give you the location with the best connectivity.")
+                sentiments = np.array([get_sentiment(row[4]) for row in filtered_data])
+                arr_with_sentiments = np.column_stack((filtered_data, sentiments))
+                sorted_arr = arr_with_sentiments[arr_with_sentiments[:, -1].argsort()[::-1]]
+                limit = min(1,len(sorted_arr))
+                for i in range(0,limit):
+                    item = sorted_arr[i]
+                    print(Location(item))
+
+                print("AITRAVEL = > If Ratings are more important to you. Then I will give you the highest rated location according to your preference.")
+                sentiments = np.array([row for row in filtered_data])
+                arr_with_sentiments = np.column_stack((filtered_data, sentiments))
+                sorted_arr = arr_with_sentiments[arr_with_sentiments[:, 3].argsort()[::-1]]      
+                limit = min(1,len(sorted_arr))
+                for i in range(0,limit):
+                    item = sorted_arr[i]
+                    print(Location(item))   
+
+                filtering = False
             else:
-                return
-        elif(user_input == "7"):
-            filtered_data = sorted(filtered_data, key=lambda row: row[3], reverse=True)
-            print("AITRAVEL => Great, I have sorted the data for you")
-            for item in filtered_data[:5] if len(filtered_data) >= 5 else filtered_data:
-                print(Location(item))
-        elif(user_input == "8"):
-            filtered_data = sorted(filtered_data, key=lambda row: row[3])
-            print("AITRAVEL => Great, I have sorted the data for you")
-            for item in filtered_data[:5] if len(filtered_data) >= 5 else filtered_data:
-                print(Location(item))
-        
-        else:
-            print("AITRAVEL => There seems to be an error. Please try again.")
+                print("AITRAVEL => There seems to be an error. Please try again.")
+
 def recommend_destination(num, option):
     if(num == 1):
         noItem = True
@@ -256,10 +295,10 @@ def add_new_destination():
     print("AITRAVEL => Give me the rating.")
     rating = input("TRAVELLER => ")
 
-    print("AITRAVEL => Give me the connectivity. {Include the word Good/Bad. Give a 5 word decription of connectivity.}")
+    print("AITRAVEL => Give me the connectivity. {Give a 5 word decription of connectivity.}")
     connectivity = input("TRAVELLER => ")
 
-    print("AITRAVEL => Give me the feedback. {Include the word Good/Bad. About 20 words text feedback}")
+    print("AITRAVEL => Give me the feedback. {About 20 words text feedback}")
     feedback = input("TRAVELLER => ")
 
     print("AITRAVEL => Give me the activities.")
@@ -440,7 +479,4 @@ def main():
     
 if __name__ == "__main__":
     main()
-
-# To Do List
-# Give practical and useful advise.
 
